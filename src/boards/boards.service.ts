@@ -3,15 +3,18 @@ import { randomUUID } from 'crypto';
 import { BoardStatus } from './board-status.enum';
 import { v1 as uuid } from 'uuid';
 import { CreateBoardDto } from './dto/create-board.dto';
-import { BoardRepository } from './board.repository';
+// import { BoardRepository } from './board.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './board.entity';
+import { Repository } from 'typeorm';
+import { BoardRepository } from './board.repository';
 
 @Injectable()
 export class BoardsService {
     constructor(
-        @InjectRepository(BoardRepository)
+        @InjectRepository(Board)
         private boardRepository: BoardRepository,
+        // private boardRepository: Repository<Board>
     ) { }
 
     //     getAllBoards(): Board[] {
@@ -30,6 +33,10 @@ export class BoardsService {
     //         this.boards.push(board);
     //         return board;
     //     }
+
+    async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
+        return this.boardRepository.createBoard(createBoardDto);
+    }
 
     async getBoardById(id: number): Promise<Board> {
         const found = await this.boardRepository.findOne(id);
